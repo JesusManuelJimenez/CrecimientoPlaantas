@@ -16,8 +16,7 @@ luz = st.sidebar.slider("Horas de luz por día", 0, 24, 12)
 agua = st.sidebar.slider("Riego (ml/día)", 0, 500, 150)
 dias = st.sidebar.slider("Días de simulación", 10, 180, 60)
 
-# --- MODELO DE CRECIMIENTO ---
-# Modelo simple: crecimiento logístico modulado por ambiente
+# Modelo de crecimiento simple con valores randoms
 def factor_ambiente(temperatura, luz, agua):
     # Valores óptimos
     opt_temp = 25
@@ -32,8 +31,8 @@ def factor_ambiente(temperatura, luz, agua):
 
 def crecimiento(dias, ambiente):
     t = np.linspace(0, dias, dias)
-    K = 100 * ambiente           # tamaño máximo ajustado por ambiente
-    r = 0.15 + 0.3 * ambiente    # tasa de crecimiento ajustada
+    K = 100 * ambiente          
+    r = 0.15 + 0.3 * ambiente    
     altura = K / (1 + np.exp(-r * (t - dias/2)))
     return t, altura
 
