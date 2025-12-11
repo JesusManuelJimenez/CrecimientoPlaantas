@@ -2,23 +2,30 @@ import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 
-st.set_page_config(page_title="Simulador de Crecimiento de Plantas", layout="centered")
+# Configuración de página
+st.set_page_config(
+    page_title="Simulador de Crecimiento de Plantas",
+    layout="centered"
+)
 
-# titulos
-st.title("Simulador de Crecimiento de Plantas")
-st.write("Ajusta los parámetros ambientales y observa cómo cambian las curvas de crecimiento.")
+# Cargar CSS externo
+with open("estilo.css") as f:
+    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-# side bar
-st.sidebar.header("Parámetros ambientales")
+# ===== TÍTULO PRINCIPAL =====
+st.markdown("<h1>🌿 Simulador de Crecimiento de Plantas</h1>", unsafe_allow_html=True)
+st.write("<p style='text-align:center;'>Ajusta los parámetros y observa cómo crece tu planta.</p>", unsafe_allow_html=True)
 
-temperatura = st.sidebar.slider("Temperatura (°C)", 5, 40, 25)
-luz = st.sidebar.slider("Horas de luz por día", 0, 24, 12)
-agua = st.sidebar.slider("Riego (ml/día)", 0, 500, 150)
-dias = st.sidebar.slider("Días de simulación", 10, 180, 60)
+# ===== SIDEBAR =====
+st.sidebar.header("⚙️ Parámetros")
 
-# Modelo de crecimiento simple con valores randoms
+temperatura = st.sidebar.slider("🌡️ Temperatura (°C)", 5, 40, 25)
+luz = st.sidebar.slider("☀️ Horas de luz", 0, 24, 12)
+agua = st.sidebar.slider("💧 Riego (ml/día)", 0, 500, 150)
+dias = st.sidebar.slider("📅 Días de simulación", 10, 180, 60)
+
+# ===== MODELO =====
 def factor_ambiente(temperatura, luz, agua):
-    # Valores óptimos
     opt_temp = 25
     opt_luz = 12
     opt_agua = 200
@@ -31,25 +38,35 @@ def factor_ambiente(temperatura, luz, agua):
 
 def crecimiento(dias, ambiente):
     t = np.linspace(0, dias, dias)
-    K = 100 * ambiente          
-    r = 0.15 + 0.3 * ambiente    
+    K = 100 * ambiente
+    r = 0.15 + 0.3 * ambiente
     altura = K / (1 + np.exp(-r * (t - dias/2)))
     return t, altura
 
 ambiente = factor_ambiente(temperatura, luz, agua)
 t, altura = crecimiento(dias, ambiente)
 
-# resultados del crecimiento
-st.subheader("Condición ambiental global")
-st.metric("Índice ambiental (0–1)", f"{ambiente:.2f}")
+# ===== METRICAS =====
+st.markdown("<div class='card'>", unsafe_allow_html=True)
+st.markdown("<h3>🌱 Condición Ambiental</h3>", unsafe_allow_html=True)
 
-# grafica
-fig, ax = plt.subplots()
-ax.plot(t, altura, color="green", linewidth=2)
-ax.set_title("Crecimiento simulado de la planta")
+col1, col2 = st.columns(2)
+with col1:
+    st.metric("Índice Ambiental", f"{ambiente:.2f}")
+with col2:
+    st.metric("Altura Máxima Estimada", f"{max(altura):.1f} cm")
+
+st.markdown("</div>", unsafe_allow_html=True)
+
+# ===== GRAFICA =====
+fig, ax = plt.subplots(figsize=(7,4))
+ax.plot(t, altura, linewidth=3)
+ax.set_facecolor("#f0fdf4")
+ax.set_title("Crecimiento de la Planta", color="#1b4332", fontsize=14)
 ax.set_xlabel("Días")
 ax.set_ylabel("Altura (cm)")
-ax.grid(True)
+ax.grid(alpha=0.3)
 
+st.markdown("<div class='card'>", unsafe_allow_html=True)
 st.pyplot(fig)
-
+st.markdown("</div>", unsafe_allow_html=True)
