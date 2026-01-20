@@ -130,7 +130,7 @@ st.markdown(
 """
 - El crecimiento sigue una curva sigmoidea debido a la limitación progresiva de recursos.
 - El tamaño máximo alcanzable depende del entorno, no solo de la genética.
-- El modelo es solo es idealizado
+- El modelo solo es idealizado
 """
 )
 
